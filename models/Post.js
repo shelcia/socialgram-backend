@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema({
+  id: {
+    type: String,
+    required: true,
+  },
   title: {
     type: String,
     required: true,
@@ -19,10 +23,6 @@ const postSchema = new mongoose.Schema({
   },
   comments: {
     type: Array,
-  },
-  date: {
-    type: Date,
-    default: Date.now(),
   },
 });
 

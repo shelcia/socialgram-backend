@@ -4,7 +4,8 @@
   "description": "fb clone backend",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "devStart": "nodemon index.js"
   },
   "author": "Shelcia",
   "license": "ISC",

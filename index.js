@@ -13,7 +13,7 @@ dotenv.config();
 
 mongoose.connect(
   process.env.DB_CONNECT,
-  { useNewUrlParser: true, useUnifiedTopology: true },
+  { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false },
   () => console.log("connected to db  ")
 );
 
@@ -33,6 +33,7 @@ app.get("/post", async (req, res) => {
 
 app.post("/post", async (req, res) => {
   const post = new Post({
+    id: req.body.id,
     title: req.body.title,
     likes: req.body.likes,
     dislikes: req.body.dislikes,
@@ -49,40 +50,43 @@ app.post("/post", async (req, res) => {
 });
 app.put("/comments/:id", async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id).exec();
+    const post = await Post.findOne({ id: req.params.id.toString() }).exec();
     post.set(req.body);
     const result = await post.save();
     res.send(result);
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).send(post);
   }
 });
 app.put("/likes/:id", async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id).exec();
-    post.set(req.body);
-    const result = await post.save();
-    res.send(result);
+    await Post.findOneAndUpdate(
+      { id: req.params.id.toString() },
+      { likes: req.body.likes }
+    );
+    res.status(200).send("successfull");
   } catch (error) {
     res.status(500).send(error);
   }
 });
 app.put("/dislikes/:id", async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id).exec();
-    post.set(req.body);
-    const result = await post.save();
-    res.send(result);
+    await Post.findOneAndUpdate(
+      { id: req.params.id.toString() },
+      { dislikes: req.body.dislikes }
+    );
+    res.status(200).send("successfull");
   } catch (error) {
     res.status(500).send(error);
   }
 });
 app.put("/hearts/:id", async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id).exec();
-    post.set(req.body);
-    const result = await post.save();
-    res.send(result);
+    await Post.findOneAndUpdate(
+      { id: req.params.id.toString() },
+      { hearts: req.body.hearts }
+    );
+    res.status(200).send("successfull");
   } catch (error) {
     res.status(500).send(error);
   }
