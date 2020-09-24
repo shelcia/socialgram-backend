@@ -93,10 +93,24 @@ app.post("/signin", async (req, res) => {
     else {
       //CREATE TOKEN
       const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
-      res.status(200).header("auth-token", token).send(token);
+      res
+        .status(200)
+        .header("auth-token", token)
+        .send({ token: token, userId: user._id });
     }
   } catch (error) {
     res.status(400).send({ message: error });
+  }
+});
+
+app.get("/userdetails/:id", async (req, res) => {
+  try {
+    const results = await User.findOne({
+      _id: req.params.id.toString(),
+    }).exec();
+    res.status(200).send(results);
+  } catch (error) {
+    res.status(404).send({ message: "Error" });
   }
 });
 
@@ -115,6 +129,7 @@ app.get("/post", async (req, res) => {
 app.post("/post", async (req, res) => {
   const post = new Post({
     id: req.body.id,
+    userId: req.body.userId,
     title: req.body.title,
     likes: req.body.likes,
     dislikes: req.body.dislikes,
@@ -168,6 +183,16 @@ app.put("/hearts/:id", async (req, res) => {
       { hearts: req.body.hearts }
     );
     res.status(200).send({ message: "successfull" });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+app.get("/myposts/:id", async (req, res) => {
+  try {
+    const results = await Post.find({
+      userId: req.params.id.toString(),
+    }).exec();
+    res.status(200).send(results);
   } catch (error) {
     res.status(500).send(error);
   }
