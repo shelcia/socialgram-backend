@@ -114,6 +114,18 @@ app.get("/userdetails/:id", async (req, res) => {
   }
 });
 
+app.put("/userdetails/edit/:id", async (req, res) => {
+  try {
+    await User.findOneAndUpdate(
+      { _id: req.params.id.toString() },
+      { fname: req.body.fname, lname: req.body.lname }
+    );
+    res.status(200).send({ message: "successfull" });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 //POST RELATED API
 
 app.get("/post", async (req, res) => {
