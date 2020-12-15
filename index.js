@@ -126,6 +126,15 @@ app.get("/userdetails/:id", async (req, res) => {
   }
 });
 
+app.get("/userId", async (req, res) => {
+  try {
+    const results = await User.find({}).select({ fname: 1, _id: 1 });
+    res.status(200).send(results);
+  } catch (error) {
+    res.status(200).send({ status: "500", message: error });
+  }
+});
+
 app.put("/userdetails/edit/:id", async (req, res) => {
   try {
     await User.findOneAndUpdate(
