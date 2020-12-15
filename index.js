@@ -45,7 +45,10 @@ app.post("/register", async (req, res) => {
   //CHECK IF MAIL ALREADY EXISTS
 
   const emailExist = await User.findOne({ email: req.body.email });
-  if (emailExist) res.send(400).send({ message: "Email Already Exists" });
+  if (emailExist) {
+    res.status(200).send({ status: "400", message: "Email Already Exists" });
+    return;
+  }
 
   //HASHING THE PASSWORD
 
@@ -63,14 +66,16 @@ app.post("/register", async (req, res) => {
     //VALIDATION OF USER INPUTS
 
     const { error } = await registerSchema.validateAsync(req.body);
-    if (error) res.send(400).send(error);
+    if (error) {
+      res.status(200).send({ status: "500", message: error });
+    }
     //THE USER IS ADDED
     else {
       await user.save();
-      res.status(200).send({ message: "user created" });
+      res.status(200).send({ status: "200", message: "user created" });
     }
   } catch (error) {
-    res.status(400).send(error);
+    res.status(200).send({ status: "500", message: error });
   }
 });
 
@@ -80,26 +85,33 @@ app.post("/signin", async (req, res) => {
   //CHECKING IF EMAIL EXISTS
 
   const user = await User.findOne({ email: req.body.email });
-  if (!user) res.status(400).send({ message: 'Email doesn"t exist' });
+  if (!user) {
+    res.status(200).send({ status: "400", message: 'Email doesn"t exist' });
+    return;
+  }
 
   const validPassword = await bcrypt.compare(req.body.password, user.password);
 
-  if (!validPassword)
-    res.status(400).send({ message: "Incorrect Password !!!" });
+  if (!validPassword) {
+    res.status(200).send({ status: "400", message: "Incorrect Password !!!" });
+    return;
+  }
 
   try {
     const { error } = await loginSchema.validateAsync(req.body);
-    if (error) return res.status(400).send({ message: error });
-    else {
+    if (error) {
+      res.status(200).send({ status: "400", message: error });
+      return;
+    } else {
       //CREATE TOKEN
       const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
       res
         .status(200)
         .header("auth-token", token)
-        .send({ token: token, userId: user._id });
+        .send({ status: "200", message: { token: token, userId: user._id } });
     }
   } catch (error) {
-    res.status(400).send({ message: error });
+    res.status(200).send({ status: "500", error });
   }
 });
 
@@ -108,9 +120,9 @@ app.get("/userdetails/:id", async (req, res) => {
     const results = await User.findOne({
       _id: req.params.id.toString(),
     }).exec();
-    res.status(200).send(results);
+    res.status(200).send({ status: "200", message: results });
   } catch (error) {
-    res.status(404).send({ message: "Error" });
+    res.status(200).send({ status: "500", message: error });
   }
 });
 
@@ -120,9 +132,11 @@ app.put("/userdetails/edit/:id", async (req, res) => {
       { _id: req.params.id.toString() },
       { fname: req.body.fname, lname: req.body.lname }
     );
-    res.status(200).send({ message: "successfull" });
+    res
+      .status(200)
+      .send({ status: "200", message: "successfully edited your profile" });
   } catch (error) {
-    console.log(error);
+    res.status(200).send({ status: "500", message: error });
   }
 });
 
@@ -133,8 +147,7 @@ app.get("/post", async (req, res) => {
     const results = await Post.find().exec();
     res.status(200).send(results);
   } catch (error) {
-    console.log(error);
-    res.status(404).send({ message: "Error" });
+    res.status(200).send({ status: "500", message: error });
   }
 });
 
@@ -150,10 +163,12 @@ app.post("/post", async (req, res) => {
   });
   try {
     await post.save();
-    res.status(200).send({ message: "successfully created" });
+    res
+      .status(200)
+      .send({ status: "200", message: "successfully created your post" });
   } catch (error) {
     console.log(error);
-    res.status(404).send({ message: "Error" });
+    res.status(200).send({ status: "500", message: error });
   }
 });
 app.put("/comments/:id", async (req, res) => {
@@ -161,9 +176,9 @@ app.put("/comments/:id", async (req, res) => {
     const post = await Post.findOne({ id: req.params.id.toString() }).exec();
     post.set(req.body);
     const result = await post.save();
-    res.send(result);
+    res.status(200).send({ status: "200", message: result });
   } catch (error) {
-    res.status(500).send(post);
+    res.status(200).send({ status: "500", message: error });
   }
 });
 app.put("/likes/:id", async (req, res) => {
@@ -172,9 +187,9 @@ app.put("/likes/:id", async (req, res) => {
       { id: req.params.id.toString() },
       { likes: req.body.likes }
     );
-    res.status(200).send({ message: "successfull" });
+    res.status(200).send({ status: "200", message: "successfull" });
   } catch (error) {
-    res.status(500).send(error);
+    res.status(200).send({ status: "500", message: error });
   }
 });
 app.put("/dislikes/:id", async (req, res) => {
@@ -183,9 +198,9 @@ app.put("/dislikes/:id", async (req, res) => {
       { id: req.params.id.toString() },
       { dislikes: req.body.dislikes }
     );
-    res.status(200).send({ message: "successfull" });
+    res.status(200).send({ status: "200", message: "successfull" });
   } catch (error) {
-    res.status(500).send(error);
+    res.status(200).send({ status: "500", message: error });
   }
 });
 app.put("/hearts/:id", async (req, res) => {
@@ -194,9 +209,9 @@ app.put("/hearts/:id", async (req, res) => {
       { id: req.params.id.toString() },
       { hearts: req.body.hearts }
     );
-    res.status(200).send({ message: "successfull" });
+    res.status(200).send({ status: "200", message: "successfull" });
   } catch (error) {
-    res.status(500).send(error);
+    res.status(200).send({ status: "500", message: error });
   }
 });
 app.get("/myposts/:id", async (req, res) => {
@@ -204,10 +219,12 @@ app.get("/myposts/:id", async (req, res) => {
     const results = await Post.find({
       userId: req.params.id.toString(),
     }).exec();
-    res.status(200).send(results);
+    res.status(200).send({ status: "200", message: results });
   } catch (error) {
-    res.status(500).send(error);
+    res.status(200).send({ status: "500", message: error });
   }
 });
 
 app.listen(PORT, () => console.log(`server up and running at  ${PORT}`));
+
+// https://fb-clone-backend.herokuapp.com/
