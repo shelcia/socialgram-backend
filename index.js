@@ -9,7 +9,7 @@ const jwt = require("jsonwebtoken");
 const verify = require("./verify");
 
 //VALIDATION OF USER INPUTS PREREQUISITES
-const Joi = require("@hapi/joi");
+const Joi = require("joi");
 
 const Post = require("./models/Post");
 const User = require("./models/User");
@@ -21,7 +21,7 @@ dotenv.config();
 mongoose.connect(
   process.env.DB_CONNECT,
   { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false },
-  () => console.log("connected to db  ")
+  () => console.log("connected to db")
 );
 
 //MIDDLEWARE
