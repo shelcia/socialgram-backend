@@ -121,10 +121,21 @@ app.post("/signin", async (req, res) => {
 
 app.get("/userdetails/:id", async (req, res) => {
   try {
-    const results = await User.findOne({
-      _id: req.params.id.toString(),
-    }).exec();
+    const results = await User.findById(req.params.id).exec();
     res.status(200).send({ status: "200", message: results });
+  } catch (error) {
+    res.status(200).send({ status: "500", message: error });
+  }
+});
+
+app.get("/username/:id", async (req, res) => {
+  try {
+    const results = await User.findById(req.params.id).select({
+      fname: 1,
+      lname: 1,
+      _id: 1,
+    });
+    res.status(200).send(results);
   } catch (error) {
     res.status(200).send({ status: "500", message: error });
   }
