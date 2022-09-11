@@ -1,6 +1,5 @@
 ![socialgram-backend](https://socialify.git.ci/shelcia/socialgram-backend/image?description=1&font=Rokkitt&forks=1&language=1&owner=1&pattern=Floating%20Cogs&theme=Dark)
 
-
 <div align="center">
     
 ![Javascript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
@@ -11,13 +10,10 @@
   
 </div>
 
-
-
-
 # Socialgram Backend
 
-### Deployement 
+### Deployement
 
-Frontend : https://fb-clone-frontend.netlify.app/
+Frontend : https://socialgram.netlify.app/
 
-Backend : https://fb-clone-backend.herokuapp.com/
+Backend : https://blushing-pike-gabardine.cyclic.app/

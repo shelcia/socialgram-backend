@@ -28,6 +28,10 @@ mongoose.connect(
 
 app.use(express.json(), cors());
 
+app.get("/", (req, res) => {
+  res.send(`<h3>Hey! Socialgram Backend is up !</h3>`);
+});
+
 //AUTHORISATION RELATED API
 
 const registerSchema = Joi.object({
