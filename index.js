@@ -76,7 +76,7 @@ app.post("/register", async (req, res) => {
     //THE USER IS ADDED
     else {
       await user.save();
-      res.status(200).send({ status: "200", message: "user created" });
+      res.status(200).send({ status: "200", message: "User Created" });
     }
   } catch (error) {
     res.status(200).send({ status: "500", message: error });
@@ -135,7 +135,7 @@ app.get("/username/:id", async (req, res) => {
       lname: 1,
       _id: 1,
     });
-    res.status(200).send(results);
+    res.status(200).send({ status: "200", message: results });
   } catch (error) {
     res.status(200).send({ status: "500", message: error });
   }
@@ -144,7 +144,7 @@ app.get("/username/:id", async (req, res) => {
 app.get("/userId", async (req, res) => {
   try {
     const results = await User.find({}).select({ fname: 1, _id: 1 });
-    res.status(200).send(results);
+    res.status(200).send({ status: "200", message: results });
   } catch (error) {
     res.status(200).send({ status: "500", message: error });
   }
@@ -158,7 +158,7 @@ app.put("/userdetails/edit/:id", async (req, res) => {
     );
     res
       .status(200)
-      .send({ status: "200", message: "successfully edited your profile" });
+      .send({ status: "200", message: "Successfully Edited your profile" });
   } catch (error) {
     res.status(200).send({ status: "500", message: error });
   }
@@ -169,7 +169,7 @@ app.put("/userdetails/edit/:id", async (req, res) => {
 app.get("/post", async (req, res) => {
   try {
     const results = await Post.find().exec();
-    res.status(200).send(results);
+    res.status(200).send({ status: "200", message: results });
   } catch (error) {
     res.status(200).send({ status: "500", message: error });
   }
@@ -211,7 +211,7 @@ app.put("/likes/:id", async (req, res) => {
       { id: req.params.id.toString() },
       { likes: req.body.likes }
     );
-    res.status(200).send({ status: "200", message: "successfull" });
+    res.status(200).send({ status: "200", message: "Successfull" });
   } catch (error) {
     res.status(200).send({ status: "500", message: error });
   }
@@ -222,7 +222,7 @@ app.put("/dislikes/:id", async (req, res) => {
       { id: req.params.id.toString() },
       { dislikes: req.body.dislikes }
     );
-    res.status(200).send({ status: "200", message: "successfull" });
+    res.status(200).send({ status: "200", message: "Successfull" });
   } catch (error) {
     res.status(200).send({ status: "500", message: error });
   }
@@ -233,7 +233,7 @@ app.put("/hearts/:id", async (req, res) => {
       { id: req.params.id.toString() },
       { hearts: req.body.hearts }
     );
-    res.status(200).send({ status: "200", message: "successfull" });
+    res.status(200).send({ status: "200", message: "Successfull" });
   } catch (error) {
     res.status(200).send({ status: "500", message: error });
   }
