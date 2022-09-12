@@ -250,5 +250,3 @@ app.get("/myposts/:id", async (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`server up and running at  ${PORT}`));
-
-// https://fb-clone-backend.herokuapp.com/
