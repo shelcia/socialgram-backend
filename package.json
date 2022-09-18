@@ -19,7 +19,7 @@
     "mongoose": "^5.13.3"
   },
   "devDependencies": {
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.20"
   },
   "engines": {
     "npm": ">=7.0.0",
