@@ -1,7 +1,7 @@
 {
-  "name": "socialgram-clone-backend",
+  "name": "socialgram-backend",
   "version": "1.0.0",
-  "description": "socialgram clone backend",
+  "description": "socialgram backend",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
