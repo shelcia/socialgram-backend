@@ -17,7 +17,7 @@ dotenv.config();
 
 mongoose.connect(
   process.env.DB_CONNECT,
-  { useUnifiedTopology: true, useNewUrlParser: true },
+  { useUnifiedTopology: true, useNewUrlParser: true, useFindAndModify: true },
   () => console.log("connected to db")
 );
 //MIDDLEWARE
