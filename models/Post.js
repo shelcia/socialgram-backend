@@ -6,28 +6,49 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  userId: {
-    type: String,
-    required: true,
+  user: {
+    userId: {
+      type: String,
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    avatar: {
+      type: String,
+      required: true,
+    },
+  },
+  owner: {
+    userId: {
+      type: String,
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    avatar: {
+      type: String,
+      required: true,
+    },
   },
   title: {
     type: String,
     required: true,
   },
-  likes: {
-    type: Number,
-    required: true,
-  },
-  dislikes: {
-    type: Number,
-    required: true,
-  },
-  hearts: {
+  fire: {
     type: Number,
     required: true,
   },
   comments: {
     type: Array,
+  },
+  reshare: {
+    type: Boolean,
+    default: false,
+    required: true,
   },
   date: {
     type: Date,

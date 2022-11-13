@@ -25,6 +25,42 @@ const userSchema = new mongoose.Schema({
     max: 1024,
     min: 6,
   },
+  pronouns: {
+    type: String,
+  },
+  location: {
+    type: String,
+  },
+  website: {
+    type: String,
+  },
+  avatar: {
+    type: Object,
+    default: {
+      avatarStyle: "circle",
+      top: "longHair",
+      accessories: "sunglasses",
+      hairColor: "auburn",
+      facialHair: "",
+      clothes: "hoodie",
+      eyes: "happy",
+      eyebrow: "raisedExcitedNatural",
+      mouth: "smile",
+      skin: "darkBrown",
+    },
+  },
+  followers: {
+    type: Array,
+    default: [],
+  },
+  following: {
+    type: Array,
+    default: [],
+  },
+  bio: {
+    type: String,
+    default: "",
+  },
   date: {
     type: Date,
     default: Date.now(),

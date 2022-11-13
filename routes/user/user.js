@@ -34,10 +34,11 @@ router.get("/userId", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   try {
-    await User.findOneAndUpdate(
-      { _id: req.params.id.toString() },
-      { fname: req.body.fname, lname: req.body.lname }
-    );
+    await User.findByIdAndUpdate(req.params.id, {
+      ...req.body,
+      avatar: req.body.avatar,
+    });
+    console.log(req.body);
     res
       .status(200)
       .send({ status: "200", message: "Successfully Edited your profile" });
