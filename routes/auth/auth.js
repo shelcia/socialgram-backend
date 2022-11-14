@@ -86,7 +86,16 @@ router.post("/signin", async (req, res) => {
       res
         .status(200)
         .header("auth-token", token)
-        .send({ status: "200", message: { token: token, userId: user._id } });
+        .send({
+          status: "200",
+          message: {
+            token: token,
+            userId: user._id,
+            fname: user.fname,
+            lname: user.lname,
+            avatar: user.avatar,
+          },
+        });
     }
   } catch (error) {
     res.status(200).send({ status: "500", error });

@@ -6,41 +6,24 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  user: {
-    userId: {
-      type: String,
-      required: true,
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-    avatar: {
-      type: String,
-      required: true,
-    },
+  userId: {
+    type: String,
+    required: true,
   },
-  owner: {
-    userId: {
-      type: String,
-      required: true,
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-    avatar: {
-      type: String,
-      required: true,
-    },
+  ownerId: {
+    type: String,
+    required: true,
   },
   title: {
     type: String,
     required: true,
   },
-  fire: {
+  fires: {
     type: Number,
     required: true,
+  },
+  fired: {
+    type: Array,
   },
   comments: {
     type: Array,

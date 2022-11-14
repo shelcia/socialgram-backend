@@ -38,7 +38,7 @@ router.put("/:id", async (req, res) => {
       ...req.body,
       avatar: req.body.avatar,
     });
-    console.log(req.body);
+    // console.log(req.body);
     res
       .status(200)
       .send({ status: "200", message: "Successfully Edited your profile" });
