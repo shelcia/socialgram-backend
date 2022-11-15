@@ -38,7 +38,31 @@ router.get("/", async (req, res) => {
       };
       reqRes = [...reqRes, newPost];
       if (reqRes.length === posts.length) {
-        res.status(200).send({ status: "200", message: reqRes });
+        res.status(200).send({ status: "200", message: reqRes.reverse() });
+      }
+    });
+  } catch (error) {
+    res.status(200).send({ status: "500", message: error });
+  }
+});
+
+router.get("/comments/:id", async (req, res) => {
+  try {
+    let reqComments = [];
+    const posts = await Post.findById(req.params.id).exec();
+
+    posts?.comments?.forEach(async (comment) => {
+      let newComment = {};
+      const userDeets = await User.findById(comment.userId).exec();
+      newComment = {
+        ...comment,
+        fname: userDeets.fname,
+        lname: userDeets.lname,
+        avatar: userDeets.avatar,
+      };
+      reqComments = [...reqComments, newComment];
+      if (reqComments.length === posts?.comments.length) {
+        res.status(200).send({ status: "200", message: reqComments });
       }
     });
   } catch (error) {
@@ -80,7 +104,9 @@ router.delete("/", async (req, res) => {
 router.put("/comments/:id", async (req, res) => {
   try {
     const post = await Post.findById(req.params.id).exec();
-    post.set(req.body);
+    const updComments = [...post.comments, req.body];
+    // console.log(updComments);
+    post.set({ ...post, comments: updComments });
     const result = await post.save();
     res.status(200).send({ status: "200", message: result });
   } catch (error) {
@@ -88,39 +114,12 @@ router.put("/comments/:id", async (req, res) => {
   }
 });
 
-// router.put("/likes/:id", async (req, res) => {
-//   try {
-//     await Post.findOneAndUpdate(
-//       { id: req.params.id.toString() },
-//       { likes: req.body.likes }
-//     );
-//     res.status(200).send({ status: "200", message: "Successfull" });
-//   } catch (error) {
-//     res.status(200).send({ status: "500", message: error });
-//   }
-// });
-
-// router.put("/dislikes/:id", async (req, res) => {
-//   try {
-//     await Post.findOneAndUpdate(
-//       { id: req.params.id.toString() },
-//       { dislikes: req.body.dislikes }
-//     );
-//     res.status(200).send({ status: "200", message: "Successfull" });
-//   } catch (error) {
-//     res.status(200).send({ status: "500", message: error });
-//   }
-// });
-
 router.put("/fires/:id", async (req, res) => {
   try {
-    // await Post.findByIdAndUpdate(req.params.id, { fires: req.body.fires,
-    // fire
-
     const post = await Post.findById(req.params.id).exec();
     post.set({
       ...post,
-      fires: post.fires + 1,
+      fires: parseInt(post.fires) + 1,
       fired: [...post.fired, req.body.userId],
     });
     await post.save();
@@ -132,10 +131,44 @@ router.put("/fires/:id", async (req, res) => {
 
 router.get("/myposts/:id", async (req, res) => {
   try {
-    const results = await Post.find({
+    const posts = await Post.find({
       userId: req.params.id.toString(),
     }).exec();
-    res.status(200).send({ status: "200", message: results });
+
+    let reqRes = [];
+
+    posts.forEach(async (post) => {
+      let newPost = {};
+      const userDeets = await User.findById(post.userId).exec();
+      const ownerDeets = await User.findById(post.ownerId).exec();
+      newPost = {
+        fired: post.fired,
+        comments: post.comments,
+        reshare: post.reshare,
+        date: post.date,
+        _id: post._id,
+        id: post.id,
+        userId: post.userId,
+        ownerId: post.ownerId,
+        title: post.title,
+        fires: post.fires,
+        user: {
+          fname: userDeets.fname,
+          lname: userDeets.lname,
+          avatar: userDeets.avatar,
+        },
+        owner: {
+          fname: ownerDeets.fname,
+          lname: ownerDeets.lname,
+          avatar: ownerDeets.avatar,
+        },
+      };
+      reqRes = [...reqRes, newPost];
+      if (reqRes.length === posts.length) {
+        res.status(200).send({ status: "200", message: reqRes });
+      }
+    });
+    // res.status(200).send({ status: "200", message: results });
   } catch (error) {
     res.status(200).send({ status: "500", message: error });
   }
