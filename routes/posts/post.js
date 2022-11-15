@@ -6,7 +6,7 @@ const User = require("../../models/User");
 
 router.get("/", async (req, res) => {
   try {
-    const posts = await Post.find().exec();
+    const posts = await Post.find().sort({ date: 1 });
 
     let reqRes = [];
 
@@ -38,7 +38,8 @@ router.get("/", async (req, res) => {
       };
       reqRes = [...reqRes, newPost];
       if (reqRes.length === posts.length) {
-        res.status(200).send({ status: "200", message: reqRes.reverse() });
+        reqRes = reqRes.reverse();
+        res.status(200).send({ status: "200", message: reqRes });
       }
     });
   } catch (error) {
