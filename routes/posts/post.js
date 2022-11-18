@@ -38,7 +38,7 @@ router.get("/", async (req, res) => {
       };
       reqRes = [...reqRes, newPost];
       if (reqRes.length === posts.length) {
-        reqRes = reqRes.reverse();
+        // reqRes = reqRes.reverse();
         res.status(200).send({ status: "200", message: reqRes });
       }
     });
@@ -153,11 +153,19 @@ router.put("/comments/:id", async (req, res) => {
 router.put("/fires/:id", async (req, res) => {
   try {
     const post = await Post.findById(req.params.id).exec();
-    post.set({
-      ...post,
-      fires: parseInt(post.fires) + 1,
-      fired: [...post.fired, req.body.userId],
-    });
+    if (post.fired.includes(req.body.userId)) {
+      post.set({
+        ...post,
+        fires: parseInt(post.fires) - 1,
+        fired: post.fired.filter((id) => id !== req.body.userId),
+      });
+    } else {
+      post.set({
+        ...post,
+        fires: parseInt(post.fires) + 1,
+        fired: [...post.fired, req.body.userId],
+      });
+    }
     await post.save();
     res.status(200).send({ status: "200", message: "Successfull" });
   } catch (error) {
