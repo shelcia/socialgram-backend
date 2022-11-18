@@ -47,6 +47,41 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    const userDeets = await User.findById(post.userId).exec();
+    const ownerDeets = await User.findById(post.ownerId).exec();
+
+    const newPost = {
+      fired: post.fired,
+      comments: post.comments,
+      reshare: post.reshare,
+      date: post.date,
+      _id: post._id,
+      id: post.id,
+      userId: post.userId,
+      ownerId: post.ownerId,
+      title: post.title,
+      fires: post.fires,
+      user: {
+        fname: userDeets.fname,
+        lname: userDeets.lname,
+        avatar: userDeets.avatar,
+      },
+      owner: {
+        fname: ownerDeets.fname,
+        lname: ownerDeets.lname,
+        avatar: ownerDeets.avatar,
+      },
+    };
+
+    res.status(200).send({ status: "200", message: newPost });
+  } catch (error) {
+    res.status(200).send({ status: "500", message: error });
+  }
+});
+
 router.get("/comments/:id", async (req, res) => {
   try {
     let reqComments = [];
