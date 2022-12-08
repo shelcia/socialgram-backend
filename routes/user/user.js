@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const Post = require("../../models/Post");
 const User = require("../../models/User");
 
 router.get("/:id", async (req, res) => {
@@ -42,6 +43,21 @@ router.put("/:id", async (req, res) => {
     res
       .status(200)
       .send({ status: "200", message: "Successfully Edited your profile" });
+  } catch (error) {
+    res.status(200).send({ status: "500", message: error });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    await Post.deleteMany({
+      ownerId: req.params.id,
+    });
+    await User.findByIdAndDelete(req.params.id);
+    res.status(200).send({
+      status: "200",
+      message: "Your account has been successfully deleted.",
+    });
   } catch (error) {
     res.status(200).send({ status: "500", message: error });
   }
