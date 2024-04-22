@@ -6,44 +6,49 @@ const User = require("../../models/User");
 
 router.get("/", async (req, res) => {
   try {
-    const posts = await Post.find().sort({ date: 1 });
+    const posts = await Post.find().sort({ date: -1 });
 
-    let reqRes = [];
+    const userIds = posts.map((post) => post.userId);
+    const ownerIds = posts.map((post) => post.ownerId);
 
-    posts.forEach(async (post) => {
-      let newPost = {};
-      const userDeets = await User.findById(post.userId).exec();
-      const ownerDeets = await User.findById(post.ownerId).exec();
-      newPost = {
-        fired: post.fired,
-        comments: post.comments,
-        reshare: post.reshare,
-        date: post.date,
-        _id: post._id,
-        id: post.id,
-        userId: post.userId,
-        ownerId: post.ownerId,
-        title: post.title,
-        fires: post.fires,
-        user: {
-          fname: userDeets.fname,
-          lname: userDeets.lname,
-          avatar: userDeets.avatar,
-        },
-        owner: {
-          fname: ownerDeets.fname,
-          lname: ownerDeets.lname,
-          avatar: ownerDeets.avatar,
-        },
-      };
-      reqRes = [...reqRes, newPost];
-      if (reqRes.length === posts.length) {
-        // reqRes = reqRes.reverse();
-        res.status(200).send({ status: "200", message: reqRes });
-      }
-    });
+    const [users, owners] = await Promise.all([
+      User.find({ _id: { $in: userIds } })
+        .select("fname lname avatar")
+        .exec(),
+      User.find({ _id: { $in: ownerIds } })
+        .select("fname lname avatar")
+        .exec(),
+    ]);
+
+    const userMap = new Map(users.map((user) => [user._id.toString(), user]));
+    const ownerMap = new Map(
+      owners.map((owner) => [owner._id.toString(), owner])
+    );
+
+    const formattedPosts = posts.map((post) => ({
+      fired: post.fired,
+      comments: post.comments,
+      reshare: post.reshare,
+      date: post.date,
+      _id: post._id,
+      id: post.id,
+      userId: post.userId,
+      ownerId: post.ownerId,
+      title: post.title,
+      fires: post.fires,
+      user: {
+        fname: userMap.get(post.userId.toString()).fname,
+        lname: userMap.get(post.userId.toString()).lname,
+      },
+      owner: {
+        fname: ownerMap.get(post.ownerId.toString()).fname,
+        lname: ownerMap.get(post.ownerId.toString()).lname,
+      },
+    }));
+
+    res.status(200).send({ status: "200", message: formattedPosts });
   } catch (error) {
-    res.status(200).send({ status: "500", message: error });
+    res.status(500).send({ status: "500", message: error });
   }
 });
 
@@ -94,7 +99,6 @@ router.get("/comments/:id", async (req, res) => {
         ...comment,
         fname: userDeets.fname,
         lname: userDeets.lname,
-        avatar: userDeets.avatar,
       };
       reqComments = [...reqComments, newComment];
       if (reqComments.length === posts?.comments.length) {
@@ -108,11 +112,11 @@ router.get("/comments/:id", async (req, res) => {
 
 router.post("/", async (req, res) => {
   const post = new Post(req.body);
+  await post.save();
+  res
+    .status(200)
+    .send({ status: "200", message: "Successfully Created your Post" });
   try {
-    await post.save();
-    res
-      .status(200)
-      .send({ status: "200", message: "Successfully Created your Post" });
   } catch (error) {
     console.log(error);
     res.status(200).send({ status: "500", message: error });
@@ -128,9 +132,9 @@ router.put("/", async (req, res) => {
   }
 });
 
-router.delete("/", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
-    await Post.deleteById(req.params.id);
+    await Post.findByIdAndDelete(req.params.id);
     res.status(200).send({ status: "200", message: "Successfull" });
   } catch (error) {
     res.status(200).send({ status: "500", message: error });

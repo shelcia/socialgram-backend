@@ -15,11 +15,7 @@ dotenv.config();
 
 //CONNECTION TO DATABASE
 
-mongoose.connect(
-  process.env.DB_CONNECT,
-  { useUnifiedTopology: true, useNewUrlParser: true, useFindAndModify: true },
-  () => console.log("connected to db")
-);
+mongoose.connect(process.env.DB_CONNECT);
 //MIDDLEWARE
 
 app.use(express.json(), cors());
